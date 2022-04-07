@@ -71,3 +71,15 @@ export const sigout = next => {
     next()
 }
 
+
+
+
+export const updateUser  = (response, next) => {
+    console.log(`Update user in localStorage HELPERS`, response)
+    if(typeof window !== 'undefined') {
+        let auth = JSON.parse(localStorage.getItem('user'))
+        auth = response.data;
+        localStorage.setItem('user', JSON.stringify(auth))
+    }
+    next()
+}

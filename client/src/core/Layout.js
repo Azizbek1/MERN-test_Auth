@@ -52,7 +52,7 @@ const Layout = ({ children }) => {
              
               {isAuth() && (              
                   <li className="nav-item">
-                    <Link className="nav-link" to="sigin">
+                    <Link className="nav-link" to="private">
                       {isAuth().name}
                     </Link>
                   </li>
