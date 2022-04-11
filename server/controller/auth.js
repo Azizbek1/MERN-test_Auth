@@ -4,70 +4,70 @@ const expressJwt = require("express-jwt");
 const sgMail = require("@sendgrid/mail");
 const { validationResult } = require("express-validator");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-// exports.signup = (req, res) => {
-//   const { name, password, email } = req.body;
-//   console.log(name, password);
-//   User.findOne({ name }).exec((err, user) => {
-//     if (user) {
-//       return res.status(400).json({
-//         error: "электронная почта занята",
-//       });
-//     }
-//   });
-//   const newUser = new User({ name, password, email });
-//   newUser.save((err, success) => {
-//     if (err) {
-//       return res.status(400).json({
-//         error: err,
-//       });
-//     }
-//     res.json({
-//       message: `успешная регистрация ${success.name}`,
-//       user: newUser,
-//     });
-//   });
-// };
 exports.signup = (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ message: `Некоректный запрос`, errors });
-    }
-    const { name, password, email } = req.body;
-    console.log(name, password);
-    User.findOne({ email }).exec((err, user) => {
-      if (user) {
-        return res.status(400).json({
-          error: "электронная почта занята",
-        });
-      }
-      const token = jwt.sign(
-        { name, email, password },
-        process.env.JWT_ACCOUNT_ACTIVATION,
-        { expiresIn: "10m" }
-      );
-      const emailData = {
-        from: process.env.EMAIL_FROM,
-        to: email,
-        subject: `ссылка для активации аккаунта`,
-        html: `
-                  <h1>  Пожалуйста, используйте следующую ссылку, чтобы активировать свою учетную запись </h1>
-                  <a  href="${process.env.CLIENT_URL}/auth/activate/${token}">Жми сюда чтобы активировать</a>
-                  <hr>
-                  <p>Это письмо может содержать конфиденциальную информацию</p>
-                  <p>${process.env.CLIENT_URL} </p>
-              `,
-      };
-      sgMail.send(emailData).then((sent) => {
-        return res.json({
-          message: `Электронная почта была отправлена ​​на ${email} Следуйте инструкциям, чтобы активировать вашу учетную запись`,
-        });
+  const { name, password, email } = req.body;
+  console.log(name, password);
+  User.findOne({ name }).exec((err, user) => {
+    if (user) {
+      return res.status(400).json({
+        error: "электронная почта занята",
       });
+    }
+  });
+  const newUser = new User({ name, password, email });
+  newUser.save((err, success) => {
+    if (err) {
+      return res.status(400).json({
+        error: err,
+      });
+    }
+    res.json({
+      message: `успешная регистрация ${success.name}`,
+      user: newUser,
     });
-  } catch (err) {
-    console.log(err);
-  }
+  });
 };
+// exports.signup = (req, res) => {
+//   try {
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//       return res.status(400).json({ message: `Некоректный запрос`, errors });
+//     }
+//     const { name, password, email } = req.body;
+//     console.log(name, password);
+//     User.findOne({ email }).exec((err, user) => {
+//       if (user) {
+//         return res.status(400).json({
+//           error: "электронная почта занята",
+//         });
+//       }
+//       const token = jwt.sign(
+//         { name, email, password },
+//         process.env.JWT_ACCOUNT_ACTIVATION,
+//         { expiresIn: "10m" }
+//       );
+//       const emailData = {
+//         from: process.env.EMAIL_FROM,
+//         to: email,
+//         subject: `ссылка для активации аккаунта`,
+//         html: `
+//                   <h1>  Пожалуйста, используйте следующую ссылку, чтобы активировать свою учетную запись </h1>
+//                   <a  href="${process.env.CLIENT_URL}/auth/activate/${token}">Жми сюда чтобы активировать</a>
+//                   <hr>
+//                   <p>Это письмо может содержать конфиденциальную информацию</p>
+//                   <p>${process.env.CLIENT_URL} </p>
+//               `,
+//       };
+//       sgMail.send(emailData).then((sent) => {
+//         return res.json({
+//           message: `Электронная почта была отправлена ​​на ${email} Следуйте инструкциям, чтобы активировать вашу учетную запись`,
+//         });
+//       });
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
 
 exports.accountActivation = (req, res) => {
   const errors = validationResult(req);
@@ -139,6 +139,8 @@ exports.signin = (req, res) => {
     });
   });
 };
+
+
 
 exports.requireSignin = expressJwt({
   secret: process.env.JWT_SECRET,

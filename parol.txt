@@ -3,6 +3,9 @@ login - azizkomilov966@gmail.com
 parol - 998903152155azizbek
 
 
+.login : 
+parol  : ochilovazizbek007
+
 .envL 
 PORT=5000
 DB_URL=mongodb://localhost:27017/test
