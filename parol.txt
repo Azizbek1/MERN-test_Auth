@@ -9,6 +9,7 @@ parol  : ochilovazizbek007
 .envL 
 PORT=5000
 DB_URL=mongodb://localhost:27017/test
+DB_URL2=mongodb+srv://movies:83kGnfmvTzwsGIwF@cluster0.mm3oe.mongodb.net/test
 CLIENT_URL=http://localhost:3000
 SENDGRID_API_KEY=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
 JWT_SECRET=456SA5D6A56SD56A4S
